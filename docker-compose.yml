@@ -7,7 +7,7 @@ services:
       args:
         UID: $UID
         GID: $GID
-    image: "gnzsnz/apt-cacher-ng:latest"
+    image: "gnzsnz/apt-cacher-ng:202103"
     container_name: aptcacher
     hostname: aptcacher
     environment:

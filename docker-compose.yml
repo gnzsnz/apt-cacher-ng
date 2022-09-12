@@ -7,18 +7,12 @@ services:
       args:
         UID: $UID
         GID: $GID
-    image: "gnzsnz/apt-cacher-ng:202103"
+    image: "gnzsnz/apt-cacher-ng:202209"
     container_name: aptcacher
     hostname: aptcacher
     environment:
-      ACNG_TRUNC: '$ACNG_TRUNC'
+      ACNG_TRUNC: ${ACNG_TRUNC}
     restart: "unless-stopped"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "5m"
-        max-file: "5"
-        compress: "true"
     ports:
         - "3142:3142"
     volumes:

@@ -18,9 +18,10 @@ RUN apt-get update \
       && find /var -group $OLD_GID -exec chgrp -h "$USER" {} + \
       && find /var -user $OLD_UID -exec chown -h "$USER" {} + \
     ; fi \
-    && chown $UID:$GID -R /etc/apt-cacher-ng
+    && chown $UID:$GID -R /etc/apt-cacher-ng \
+    && chown $UID:$GID -R /var/run/apt-cacher-ng
 
-COPY --chown=$USER:$USER etc/* /etc/apt-cacher-ng/
+COPY --chown=$USER:$USER etc/acng.conf /etc/apt-cacher-ng/
 COPY --chown=$USER:$USER acng.sh /usr/local/bin
 USER apt-cacher-ng
 EXPOSE 3142

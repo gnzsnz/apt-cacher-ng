@@ -5,9 +5,11 @@ services:
     build:
       context: .
       args:
-        UID: $UID
-        GID: $GID
-    image: "gnzsnz/apt-cacher-ng:202209"
+        UID: ${UID}
+        GID: ${GID}
+        BASE_VERSION: ${BASE_VERSION}
+        APT_PROXY: ${APT_PROXY}
+    image: "gnzsnz/apt-cacher-ng:${IMAGE_VERSION}"
     container_name: aptcacher
     hostname: aptcacher
     environment:
@@ -17,7 +19,10 @@ services:
         - "3142:3142"
     volumes:
         - aptcacher-cache:/var/cache/apt-cacher-ng
+        - aptcacher-logs:/var/logs/apt-cacher-ng
 
 volumes:
     aptcacher-cache:
       name: aptcacher-cache
+    aptcacher-logs:
+      name: aptcacher-logs

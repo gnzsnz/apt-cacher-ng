@@ -5,25 +5,24 @@ services:
     build:
       context: .
       args:
-        UID: $UID
-        GID: $GID
-    image: "gnzsnz/apt-cacher-ng:latest"
+        UID: ${UID}
+        GID: ${GID}
+        BASE_VERSION: ${BASE_VERSION}
+        APT_PROXY: ${APT_PROXY}
+    image: "gnzsnz/apt-cacher-ng:${IMAGE_VERSION}"
     container_name: aptcacher
     hostname: aptcacher
     environment:
-      ACNG_TRUNC: '$ACNG_TRUNC'
+      ACNG_TRUNC: ${ACNG_TRUNC}
     restart: "unless-stopped"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "5m"
-        max-file: "5"
-        compress: "true"
     ports:
         - "3142:3142"
     volumes:
         - aptcacher-cache:/var/cache/apt-cacher-ng
+        - aptcacher-logs:/var/logs/apt-cacher-ng
 
 volumes:
     aptcacher-cache:
       name: aptcacher-cache
+    aptcacher-logs:
+      name: aptcacher-logs

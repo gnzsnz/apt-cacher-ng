@@ -3,8 +3,11 @@
 ############ Project Specific #################
 .env
 env.*
-docker-compose.yml.*
+docker-compose.yml
 ###############################################
+
+# vs code
+.vscode
 
 ### OSX ###
 .DS_Store

@@ -37,9 +37,9 @@ jobs:
     - name: Set-up runner APT
       run: |
         sudo rm -rf /var/lib/apt/lists/*
-        echo 'Acquire::http { Proxy "http://127.0.0.1:3142"; }' | tee /etc/apt/apt.conf.d/01proxy
-        apt-get update
-        DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+        echo 'Acquire::http { Proxy "http://127.0.0.1:3142"; }' | sudo tee /etc/apt/apt.conf.d/01proxy
+        sudo apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 
     - name: aptcacher container log verification
       run: |

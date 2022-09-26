@@ -17,7 +17,7 @@ jobs:
     
     - uses: c-py/action-dotenv-to-setenv@v2
       with:
-        env-file: .env-dist
+        env-file: /github/workspace/.env-dist
     
     - name: Build the Docker image
       run: docker build . --file Dockerfile \

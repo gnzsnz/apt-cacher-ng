@@ -30,7 +30,7 @@ jobs:
 
     - name: Run container
       run: |
-        docker run -p 3142:3142 \
+        docker run -d -p 3142:3142 \
         --name aptcacher \
         ${{ github.repository }}:${{ env.IMAGE_VERSION }} 
 

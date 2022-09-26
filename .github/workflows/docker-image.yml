@@ -30,7 +30,7 @@ jobs:
       run: |
         docker build . --file Dockerfile \
         --build-arg UID=${{ env.UID }}  --build-arg GID=${{ env.GID }} \
-        --build-arg BASE_VERSION=${{ matrix.os }}
+        --build-arg BASE_VERSION=${{ matrix.os }} \
         --tag ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.os }}
 
     - name: Run container

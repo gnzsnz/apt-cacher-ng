@@ -11,9 +11,10 @@ jobs:
     name: Build and test aptcacher
     strategy:
       matrix:
-        os: [focal, jammy]
+        image_os: [focal, jammy]
+        runner_os: [20.04, 22.04]
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-${{ matrix.runner_os}}
     continue-on-error: true
 
     steps:
@@ -30,14 +31,14 @@ jobs:
       run: |
         docker build . --file Dockerfile \
         --build-arg UID=${{ env.UID }}  --build-arg GID=${{ env.GID }} \
-        --build-arg BASE_VERSION=${{ matrix.os }} \
-        --tag ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.os }}
+        --build-arg BASE_VERSION=${{ matrix.image_os }} \
+        --tag ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.image_os }}
 
     - name: Run container
       run: |
         docker run -d -p 3142:3142 \
         --name aptcacher \
-        ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.os }}
+        ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.image_os }}
 
     - name: Set-up runner APT proxy
       run: |

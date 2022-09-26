@@ -21,4 +21,4 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile \
             --build-arg UID=${{ env.UID }}  --build-arg GID=${{ env.GID }} \
-            --tag $GITHUB_REPOSITORY:${{ env.IMAGE_VERSION }}
+            --tag ${{ github.repository }}:${{ env.IMAGE_VERSION }}

@@ -43,5 +43,5 @@ jobs:
 
     - name: aptcacher container log verification
       run: |
-        eval export $(grep DISTRIB_CODENAME lsb-release)
+        eval export $(grep DISTRIB_CODENAME /etc/lsb-release)
         docker logs -t aptcacher | grep $DISTRIB_CODENAME

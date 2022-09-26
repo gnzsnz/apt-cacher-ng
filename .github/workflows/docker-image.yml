@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - uses: c-py/action-dotenv-to-setenv@v2
+      with:
+        env-file: .env-dist
+    
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile \
+            --build-arg UID=$UID  --build-arg GID=$GID \
+            --tag $GITHUB_REPOSITORY:$IMAGE_VERSION

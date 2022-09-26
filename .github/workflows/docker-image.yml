@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: apt-cacher-ng Docker Image CI
 
 on:
   push:
@@ -7,10 +7,14 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
+    name: Build and test aptcacher
+    strategy:
+      matrix:
+        os: [focal, jammy]
 
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
     - uses: actions/checkout@v3
@@ -26,22 +30,24 @@ jobs:
       run: |
         docker build . --file Dockerfile \
         --build-arg UID=${{ env.UID }}  --build-arg GID=${{ env.GID }} \
-        --tag ${{ github.repository }}:${{ env.IMAGE_VERSION }}
+        --build-arg BASE_VERSION=${{ matrix.os }}
+        --tag ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.os }}
 
     - name: Run container
       run: |
         docker run -d -p 3142:3142 \
         --name aptcacher \
-        ${{ github.repository }}:${{ env.IMAGE_VERSION }} 
+        ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.os }}
 
-    - name: Set-up runner APT
+    - name: Set-up runner APT proxy
       run: |
         sudo rm -rf /var/lib/apt/lists/*
-        echo 'Acquire::http { Proxy "http://127.0.0.1:3142"; }' | sudo tee /etc/apt/apt.conf.d/01proxy
+        echo 'Acquire::http { Proxy "http://127.0.0.1:3142"; }' | \
+        sudo tee /etc/apt/apt.conf.d/01proxy
         sudo apt-get update
         sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 
     - name: aptcacher container log verification
       run: |
         eval export $(grep DISTRIB_CODENAME /etc/lsb-release)
-        docker logs -t aptcacher | grep $DISTRIB_CODENAME
+        docker logs -t aptcacher | grep $DISTRIB_CODENAME && exit 0 || exit 1

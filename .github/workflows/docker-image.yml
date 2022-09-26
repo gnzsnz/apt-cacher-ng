@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: apt-cacher-ng Docker Image CI
 
 on:
   push:
@@ -7,18 +7,48 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
+    name: Build and test aptcacher
+    strategy:
+      matrix:
+        image_os: [focal, jammy]
+        runner_os: [20.04, 22.04]
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-${{ matrix.runner_os}}
+    continue-on-error: true
 
     steps:
     - uses: actions/checkout@v3
     
     - name: Get enviroment variables
-      run: while IFS= read -r line; do echo $line >> $GITHUB_ENV ; done < .env-dist
+      run: |
+        grep -v '#' .env-dist | grep '=' > .env
+        while IFS= read -r line; do 
+          echo $line >> $GITHUB_ENV ; 
+        done < .env
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile \
-            --build-arg UID=$UID  --build-arg GID=$GID \
-            --tag $GITHUB_REPOSITORY:$IMAGE_VERSION
+      run: |
+        docker build . --file Dockerfile \
+        --build-arg UID=${{ env.UID }}  --build-arg GID=${{ env.GID }} \
+        --build-arg BASE_VERSION=${{ matrix.image_os }} \
+        --tag ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.image_os }}
+
+    - name: Run container
+      run: |
+        docker run -d -p 3142:3142 \
+        --name aptcacher \
+        ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.image_os }}
+
+    - name: Set-up runner APT proxy
+      run: |
+        sudo rm -rf /var/lib/apt/lists/*
+        echo 'Acquire::http { Proxy "http://127.0.0.1:3142"; }' | \
+        sudo tee /etc/apt/apt.conf.d/01proxy
+        sudo apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+
+    - name: aptcacher container log verification
+      run: |
+        eval export $(grep DISTRIB_CODENAME /etc/lsb-release)
+        docker logs -t aptcacher | grep $DISTRIB_CODENAME && exit 0 || exit 1

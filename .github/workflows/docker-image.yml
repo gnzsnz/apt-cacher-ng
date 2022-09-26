@@ -19,6 +19,7 @@ jobs:
       run: while IFS= read -r line; do echo $line >> $GITHUB_ENV ; done < .env-dist
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile \
-            --build-arg UID=${{ env.UID }}  --build-arg GID=${{ env.GID }} \
-            --tag ${{ github.repository }}:${{ env.IMAGE_VERSION }}
+      run: |
+        docker build . --file Dockerfile \
+        --build-arg UID=${{ env.UID }}  --build-arg GID=${{ env.GID }} \
+        --tag ${{ github.repository }}:${{ env.IMAGE_VERSION }}

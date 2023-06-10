@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  IMAGE_NAME: gnzsnz/bastion
+
 jobs:
   build:
     name: Build and test aptcacher
@@ -48,7 +51,7 @@ jobs:
         run: |
           docker run -d -p 3142:3142 \
           --name aptcacher \
-          ${{ github.repository }}:${{ env.IMAGE_VERSION }}-${{ matrix.image_os }}
+          ${{ env.IMAGE_NAME }}:${{ env.IMAGE_VERSION }}-${{ matrix.image_os }}
 
       - name: Set-up runner APT proxy
         run: |

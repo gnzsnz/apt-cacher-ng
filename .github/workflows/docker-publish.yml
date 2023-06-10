@@ -5,7 +5,6 @@ on:
     types: [published]
 
 env:
-  IMAGE_NAME: gnzsnz/apt-cacher-ng
   LATEST_TAG: jammy
 
 jobs:

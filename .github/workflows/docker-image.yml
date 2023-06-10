@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ "master" ]
 
-env:
-  IMAGE_NAME: gnzsnz/bastion
-
 jobs:
   build:
     name: Build and test aptcacher

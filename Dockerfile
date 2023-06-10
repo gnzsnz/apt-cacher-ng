@@ -27,6 +27,7 @@ RUN if [ -n "$APT_PROXY" ]; then \
     ; fi \
     && chown $UID:$GID -R /etc/apt-cacher-ng \
     && chown $UID:$GID -R /var/run/apt-cacher-ng \
+    && chown $UID:$GID -R /var/cache/apt-cacher-ng \
     && touch /var/run/crond.pid \
     && chown $UID:$GID -R /var/run/crond.pid \
     && chmod u+s /usr/sbin/cron

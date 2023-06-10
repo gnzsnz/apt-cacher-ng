@@ -9,8 +9,7 @@ services:
         GID: ${GID}
         BASE_VERSION: ${BASE_VERSION}
         APT_PROXY: ${APT_PROXY}
-    image: "gnzsnz/apt-cacher-ng:${IMAGE_VERSION}"
-    container_name: aptcacher
+    image: "gnzsnz/apt-cacher-ng:${IMAGE_VERSION}-${BASE_VERSION}"
     hostname: aptcacher
     environment:
       ACNG_TRUNC: ${ACNG_TRUNC}

@@ -25,11 +25,11 @@ RUN if [ -n "$APT_PROXY" ]; then \
       && find /var -group $OLD_GID -exec chgrp -h "$USER" {} + \
       && find /var -user $OLD_UID -exec chown -h "$USER" {} + \
     ; fi \
-    && chown $UID:$GID -R /etc/apt-cacher-ng \
-    && chown $UID:$GID -R /var/run/apt-cacher-ng \
-    && chown $UID:$GID -R /var/cache/apt-cacher-ng \
+    && chown $USER:$USER -R /etc/apt-cacher-ng \
+    && chown $USER:$USER -R /var/run/apt-cacher-ng \
+    && chown $USER:$USER -R /var/cache/apt-cacher-ng \
     && touch /var/run/crond.pid \
-    && chown $UID:$GID -R /var/run/crond.pid \
+    && chown $USER:$USER -R /var/run/crond.pid \
     && chmod u+s /usr/sbin/cron
 
 COPY --chown=$USER:$USER etc/acng.conf /etc/apt-cacher-ng/
@@ -37,6 +37,6 @@ COPY --chown=$USER:$USER acng.sh /usr/local/bin
 COPY cron.allow /etc/
 USER apt-cacher-ng
 EXPOSE 3142
-VOLUME ["/var/cache/apt-cacher-ng"]
+
 CMD ["/usr/local/bin/acng.sh"]
 ENTRYPOINT ["/usr/bin/tini", "--"]

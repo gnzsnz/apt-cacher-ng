@@ -13,6 +13,7 @@ RUN if [ -n "$APT_PROXY" ]; then \
       | tee /etc/apt/apt.conf.d/01proxy \
     ;fi && \
     apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -yq \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
       --no-install-recommends \
        apt-cacher-ng ca-certificates cron tini \

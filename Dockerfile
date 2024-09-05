@@ -34,6 +34,7 @@ RUN if [ -n "$APT_PROXY" ]; then \
     && chown $USER:$USER -R /etc/apt-cacher-ng \
     && chown $USER:$USER -R /var/run/apt-cacher-ng \
     && chown $USER:$USER -R /var/cache/apt-cacher-ng \
+    && chown $USER:$USER -R /var/log/apt-cacher-ng \
     && touch /var/run/crond.pid \
     && chown $USER:$USER -R /var/run/crond.pid \
     && chmod u+s /usr/sbin/cron

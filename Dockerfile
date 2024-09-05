@@ -1,5 +1,5 @@
 ARG BASE_VERSION
-FROM ubuntu:${BASE_VERSION:-latest}
+FROM ubuntu:${BASE_VERSION}
 
 ARG BASE_VERSION
 ARG UID
@@ -8,6 +8,8 @@ ARG USER=apt-cacher-ng
 ARG OLD_UID=101
 ARG OLD_GID=101
 ENV ACNG_TRUNC=$ACNG_TRUNC
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# hadolint ignore=DL3008,SC2086
 RUN if [ -n "$APT_PROXY" ]; then \
       echo 'Acquire::http { Proxy "'$APT_PROXY'"; }'  \
       | tee /etc/apt/apt.conf.d/01proxy \
@@ -19,7 +21,10 @@ RUN if [ -n "$APT_PROXY" ]; then \
        apt-cacher-ng ca-certificates cron tini \
     && rm -rf /var/lib/apt/lists/* \
     && cp /etc/apt-cacher-ng/acng.conf /etc/apt-cacher-ng/acng.conf.dist \
-    && if [ -n "$UID" -a -n "$GID" ]; then \
+    && if id ubuntu; then \
+      userdel -rf ubuntu \
+    ; fi \
+    && if [ -n "$UID" ] && [ -n "$GID" ]; then \
       echo 'Setting UID:'$UID' and GID:'$GID \
       && usermod -u $UID $USER \
       && groupmod -g $GID $USER \
@@ -29,6 +34,7 @@ RUN if [ -n "$APT_PROXY" ]; then \
     && chown $USER:$USER -R /etc/apt-cacher-ng \
     && chown $USER:$USER -R /var/run/apt-cacher-ng \
     && chown $USER:$USER -R /var/cache/apt-cacher-ng \
+    && chown $USER:$USER -R /var/log/apt-cacher-ng \
     && touch /var/run/crond.pid \
     && chown $USER:$USER -R /var/run/crond.pid \
     && chmod u+s /usr/sbin/cron

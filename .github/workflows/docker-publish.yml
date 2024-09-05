@@ -5,14 +5,14 @@ on:
     types: [published]
 
 env:
-  LATEST_TAG: jammy
+  LATEST_TAG: noble
 
 jobs:
   publish:
     name: Build and test apt-cacher-ng
     strategy:
       matrix:
-        image_os: [focal, jammy]
+        image_os: [noble, jammy]
 
     runs-on: ubuntu-latest
 

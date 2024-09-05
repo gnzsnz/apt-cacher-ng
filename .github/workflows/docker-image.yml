@@ -11,7 +11,7 @@ jobs:
     name: Build and test aptcacher
     strategy:
       matrix:
-        image_os: [focal, jammy]
+        image_os: [noble, jammy]
         runner_os: [24.04, 22.04]
 
     runs-on: ubuntu-${{ matrix.runner_os}}

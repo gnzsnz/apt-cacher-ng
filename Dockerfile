@@ -1,4 +1,4 @@
-ARG BASE_VERSION=noble
+ARG BASE_VERSION=resolute
 FROM ubuntu:${BASE_VERSION}
 
 ARG BASE_VERSION
@@ -7,6 +7,7 @@ ARG GID
 ARG USER=apt-cacher-ng
 ARG OLD_UID=101
 ARG OLD_GID=101
+ARG DEBIAN_FRONTEND=noninteractive
 ENV ACNG_TRUNC=$ACNG_TRUNC
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3008,SC2086
@@ -15,8 +16,8 @@ RUN if [ -n "$APT_PROXY" ]; then \
       | tee /etc/apt/apt.conf.d/01proxy \
     ;fi && \
     apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -yq \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    && apt-get upgrade -yq \
+    && apt-get install -y \
       --no-install-recommends \
        apt-cacher-ng ca-certificates cron tini \
     && rm -rf /var/lib/apt/lists/* \
@@ -42,6 +43,7 @@ RUN if [ -n "$APT_PROXY" ]; then \
 COPY --chown=$USER:$USER etc/acng.conf /etc/apt-cacher-ng/
 COPY --chown=$USER:$USER acng.sh /usr/local/bin
 COPY cron.allow /etc/
+# hadolint ignore=DL3066
 USER apt-cacher-ng
 EXPOSE 3142
 

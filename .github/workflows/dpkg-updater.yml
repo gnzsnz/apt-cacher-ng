@@ -6,17 +6,17 @@ on:
   workflow_dispatch:
 
 env:
-  SEARCH_FOR: apt-cacher-ng libssl3
+  SEARCH_FOR: apt-cacher-ng libssl3t64
   SEARCH_TERM: 'Depends:\|Version:'
   IMAGE_NAME: ghcr.io/gnzsnz/apt-cacher-ng
 
 jobs:
   checkupdate:
       name: Check for dpkg updates
-      runs-on: ubuntu-22.04
+      runs-on: ubuntu-latest
       strategy:
         matrix:
-          image_os: [noble, jammy]
+          image_os: [resolute, noble]
 
       steps:
         - name: Checkout
